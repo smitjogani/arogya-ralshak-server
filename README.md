@@ -1,83 +1,81 @@
-# 🛡️ Aarogya-Rakshak: Secure Sync Vault (Backend)
+# 🛡️ Aarogya-Rakshak: Secure Cloud Vault (Backend)
 
-> **A lightweight, secure vault for optional data backup and family sharing.**
+> **A highly secure, highly normalized cloud vault for user profiles and encrypted financial snapshots.**
 
-This is the backend service for the Aarogya-Rakshak mobile app (built for the iQOO Hackathon 2026). In accordance with our privacy-first philosophy, this backend **does not** process any documents, images, or AI inference. Its sole purpose is to serve as an optional, secure vault for encrypted user profiles and JSON calculation summaries.
-
----
-
-## 🛠️ Tech Stack
-
-- **Runtime:** Node.js
-- **Framework:** Express.js
-- **Database:** PostgreSQL
-- **ORM:** Prisma (or Sequelize)
-- **Authentication:** JWT (JSON Web Tokens) & bcrypt
+The backend for Aarogya-Rakshak acts exclusively as a secure sync mechanism and profile manager. **It does not perform any OCR or AI processing.** All sensitive document parsing happens on the client, and the backend only stores the final deterministic output, heavily encrypted.
 
 ---
 
-## 🗄️ Database Schema
+## 🛠️ Tech Stack & Architecture
 
-The PostgreSQL database maintains the following core entities:
-
-| Table | Fields | Description |
-| :--- | :--- | :--- |
-| **User** | `id`, `name`, `email`, `password_hash`, `created_at` | Core user account details. |
-| **InsuranceProfile** | `id`, `user_id`, `provider_name`, `policy_number`, `base_sum_insured` | User's base health insurance information. |
-| **EmergencySnapshot** | `id`, `user_id`, `hospital_name`, `total_estimate`, `estimated_out_of_pocket`, `sync_date`, `raw_json_summary` | Encrypted JSON blobs containing the offline-calculated financial summaries. |
+- **Environment:** Node.js, Express, TypeScript
+- **Architecture:** Feature-based Modular Monolith
+- **Database:** PostgreSQL (3NF normalized, ACID compliant)
+- **ORM:** Prisma
+- **Observability:** Centralized JSON structured logging using `pino`
 
 ---
 
-## 🌐 API Endpoints
+## 🔒 Security & Validation Pipeline
 
-All API requests (except authentication) require a valid `Authorization: Bearer <token>` header.
+The API is fortified at multiple levels to ensure data integrity and privacy:
 
-| Method | Endpoint | Description | Auth Required |
-| :--- | :--- | :--- | :---: |
-| `POST` | `/api/auth/register` | Register a new user account. | ❌ |
-| `POST` | `/api/auth/login` | Authenticate and receive a JWT. | ❌ |
-| `GET` | `/api/snapshots` | Fetch user's synced emergency snapshots. | ✅ |
-| `POST` | `/api/snapshots` | Sync a new offline calculation JSON to the vault. | ✅ |
+### 1. Level 1 (API Boundary)
+- **Zod DTO Validation:** All incoming requests are strictly validated against Zod schemas.
+- **Middleware Protections:** Secured with `helmet` for HTTP headers, `cors` for origin control, and `express-rate-limit` for DDoS protection.
+- **Authentication:** JWT-based auth (Access/Refresh tokens) with `bcrypt` (or `argon2`) password hashing.
+- **Global Error Handling:** Custom `AppError` classes are intercepted by a global middleware to prevent stack trace leaks and standardize error responses.
 
----
+### 2. Level 2 (DB Boundary)
+- Prisma schema enforces foreign key cascades, unique indexes, and strong typing.
 
-## 📋 Prerequisites
-
-Ensure you have the following installed on your system:
-- [Node.js](https://nodejs.org/) (v18 or higher recommended)
-- [PostgreSQL](https://www.postgresql.org/) (Native or via Docker)
+### 3. Data Privacy
+- **AES-256 GCM Encryption:** The `encryptedJsonSummary` payload from the client is encrypted using Node's native `crypto` module *before* insertion into the database, providing an additional layer of security at rest beyond standard DB encryption.
 
 ---
 
-## 🚀 Setup & Run Instructions
+## 🗄️ Database Schema Blueprint
 
-### 1. Install dependencies
+The database is normalized to support high concurrency (5,000+ users) and robust relations.
+
+- **`User`**: `id` (UUID), `email`, `passwordHash`, `fullName`
+- **`Policy`**: `id`, `userId`, `providerName`, `policyNumber`, `sumInsured`, `roomRentLimit`, `coPayPercentage`, `deductible`
+- **`FinancialAnalysis`**: `id`, `userId`, `policyId`, `hospitalName`, `totalBilledAmount`, `estimatedInsuranceCover`, `estimatedOutOfPocket`, `encryptedJsonSummary` (AES payload), `status`
+- **Child Tables**: `BillLineItem`, `RedFlag`, `SuggestedQuestion` (Normalized 1-to-N relationships to `FinancialAnalysis` with cascading deletes).
+
+---
+
+## 🚀 Local Development Setup
+
+### 1. Install Dependencies
 ```bash
 cd server
 npm install
 ```
 
-### 2. Configure Environment Variables
-Create a `.env` file in the `server/` directory and populate it with the required values:
-
+### 2. Configure Environment
+Create a `.env` file in the root of the `server/` directory:
 ```env
 PORT=3000
-DATABASE_URL="postgresql://<USER>:<PASSWORD>@localhost:5432/aarogya_rakshak?schema=public"
-JWT_SECRET="your_super_secret_jwt_key_here"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/aarogya_rakshak?schema=public"
+JWT_SECRET="your_jwt_secret"
+AES_ENCRYPTION_KEY="your_32_byte_aes_key" # Must be exactly 32 bytes for AES-256
 ```
 
-### 3. Database Setup & Migration
-Apply the database schema using your chosen ORM (assuming Prisma for this example):
+### 3. Start Local PostgreSQL (via Docker)
+To spin up a local PostgreSQL instance for development:
 ```bash
-npx prisma migrate dev --name init
+docker run --name aarogya-postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres
+```
+
+### 4. Initialize the Database
+Push the Prisma schema to the database and generate the Prisma Client:
+```bash
+npx prisma db push
 npx prisma generate
 ```
 
-### 4. Start the Development Server
+### 5. Run the Server
 ```bash
 npm run dev
 ```
-The API will be available at `http://localhost:3000`.
-
-> [!TIP]  
-> If you are testing the mobile app on a physical device, ensure your phone and computer are on the same local network, and replace `localhost` in your app's `API_BASE_URL` with your computer's local IP address (e.g., `192.168.1.100`).
