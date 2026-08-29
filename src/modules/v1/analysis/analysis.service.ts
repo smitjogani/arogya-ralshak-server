@@ -3,12 +3,14 @@ import { CreateAnalysisDto } from './dto/analysis.dto';
 import { encryptText } from '../../../utils/crypto.util';
 
 
+import { Prisma } from '@prisma/client';
+
 export class AnalysisService {
   async createSnapshot(userId: string, data: CreateAnalysisDto) {
     const encryptedJson = encryptText(JSON.stringify(data.jsonSummary));
 
     // Execute in a transaction to guarantee ACID properties
-    const analysis = await prisma.$transaction(async (tx) => {
+    const analysis = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const result = await tx.financialAnalysis.create({
         data: {
           userId,
