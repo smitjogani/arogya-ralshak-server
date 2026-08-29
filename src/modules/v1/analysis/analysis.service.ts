@@ -1,9 +1,7 @@
-import prisma from '../../../config/prisma';
+import { prisma } from '../../../config/prisma';
 import { CreateAnalysisDto } from './dto/analysis.dto';
 import { encryptText } from '../../../utils/crypto.util';
-import { AiService } from './ai.service';
-import { CalculationService } from './calculation.service';
-import { OcrService } from './ocr.service';
+
 
 export class AnalysisService {
   async createSnapshot(userId: string, data: CreateAnalysisDto) {
