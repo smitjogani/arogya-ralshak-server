@@ -1,8 +1,8 @@
 import * as argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
-import { prisma } from '../../../../config/prisma';
-import { env } from '../../../../config/env';
-import { AppError } from '../../../../core/errors/app.error';
+import prisma from '../../../config/prisma';
+import { env } from '../../../config/env';
+import { AppError } from '../../../core/errors/app.error';
 import { RegisterDto, LoginDto } from './dto/auth.dto';
 
 export class AuthService {

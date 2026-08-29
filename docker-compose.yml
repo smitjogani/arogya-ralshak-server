@@ -23,6 +23,22 @@ services:
       - redis_data:/data
     restart: unless-stopped
 
+  backend:
+    build: .
+    container_name: aarogya-backend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://postgres:postgrespassword@postgres:5432/aarogya_rakshak?schema=public
+      - REDIS_URL=redis://redis:6379
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+
 volumes:
   postgres_data:
   redis_data:

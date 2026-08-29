@@ -1,6 +1,6 @@
-import { prisma } from '../../../../config/prisma';
+import { prisma } from '../../../config/prisma';
 import { CreatePolicyDto, UpdatePolicyDto } from './dto/policy.dto';
-import { AppError } from '../../../../core/errors/app.error';
+import { AppError } from '../../../core/errors/app.error';
 
 export class PolicyService {
   async createPolicy(userId: string, data: CreatePolicyDto) {

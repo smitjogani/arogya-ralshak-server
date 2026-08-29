@@ -49,9 +49,14 @@ describe('Cryptography Utility (AES-256 GCM)', () => {
     const encrypted = encryptText(sampleData);
     const parts = encrypted.split(':');
     
-    // Modify the auth tag slightly
-    const tamperedAuthTag = parts[1].replace(/[0-9a-f]/, 'f');
-    const tamperedPayload = `${parts[0]}:${tamperedAuthTag}:${parts[2]}`;
+    // Explicitly tamper by reversing the hex string (guarantees invalidation)
+    const tamperedAuthTag = parts[1].split('').reverse().join('');
+    // If it happens to be a palindrome, just change the last char to '0' (or '1' if it is '0')
+    const finalTampered = tamperedAuthTag === parts[1] 
+      ? tamperedAuthTag.slice(0, -1) + (tamperedAuthTag.endsWith('0') ? '1' : '0')
+      : tamperedAuthTag;
+
+    const tamperedPayload = `${parts[0]}:${finalTampered}:${parts[2]}`;
     
     // Decipher throws error when auth tag fails validation
     expect(() => decryptText(tamperedPayload)).toThrow();

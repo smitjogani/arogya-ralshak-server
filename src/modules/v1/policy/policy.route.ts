@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { PolicyController } from './policy.controller';
-import { validateRequest } from '../../../../core/middlewares/validation.middleware';
-import { authGuard } from '../../../../core/middlewares/auth.middleware';
+import { validateRequest } from '../../../core/middlewares/validation.middleware';
+import { authGuard } from '../../../core/middlewares/auth.middleware';
 import { createPolicySchema, updatePolicySchema } from './dto/policy.dto';
 
 const router = Router();

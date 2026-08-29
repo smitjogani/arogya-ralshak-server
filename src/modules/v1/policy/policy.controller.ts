@@ -1,7 +1,7 @@
 import { Response, NextFunction } from 'express';
 import { PolicyService } from './policy.service';
-import { ApiResponse } from '../../../../core/utils/api-response';
-import { AuthRequest } from '../../../../core/middlewares/auth.middleware';
+import { ApiResponse } from '../../../core/utils/api-response';
+import { AuthRequest } from '../../../core/middlewares/auth.middleware';
 
 export class PolicyController {
   private policyService: PolicyService;
