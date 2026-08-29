@@ -18,6 +18,7 @@ export class PolicyService {
       data: {
         ...data,
         userId,
+        validUntil: data.validUntil ? new Date(data.validUntil) : null,
       },
     });
   }

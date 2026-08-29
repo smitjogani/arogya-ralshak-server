@@ -8,6 +8,7 @@ export const createPolicySchema = z.object({
     roomRentLimit: z.number().nonnegative(),
     coPayPercentage: z.number().min(0).max(100),
     deductible: z.number().nonnegative(),
+    validUntil: z.string().datetime().optional(),
   }),
 });
 
@@ -18,6 +19,7 @@ export const updatePolicySchema = z.object({
     roomRentLimit: z.number().nonnegative().optional(),
     coPayPercentage: z.number().min(0).max(100).optional(),
     deductible: z.number().nonnegative().optional(),
+    validUntil: z.string().datetime().optional(),
   }),
   params: z.object({
     id: z.string().uuid(),
