@@ -5,6 +5,7 @@ import { AppError } from '../errors/app.error';
 
 export interface AuthRequest extends Request {
   user?: { id: string; email: string };
+  file?: Express.Multer.File;
 }
 
 export const authGuard = (req: AuthRequest, res: Response, next: NextFunction) => {
