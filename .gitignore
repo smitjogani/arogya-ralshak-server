@@ -6,3 +6,5 @@ coverage/
 .prisma/
 build/
 tmp/
+studied-jigsaw-*.json
+*-*.json
