@@ -212,12 +212,18 @@ The \`/analyses/process-document\` endpoint is the ONLY exception for request bo
           description: 'Requires an EncryptedPayload containing email, password, and fullName.',
           requestBody: {
             required: true,
-            content: { 'application/json': { schema: { $ref: '#/components/schemas/EncryptedPayload' } } },
+            content: { 
+              'application/json': { schema: { $ref: '#/components/schemas/EncryptedPayload' } },
+              'application/json-decrypted': { schema: { $ref: '#/components/schemas/RegisterRequest' } }
+            },
           },
           responses: {
             '201': {
               description: 'Encrypted JSON Response containing user data',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/EncryptedPayload' } } },
+              content: { 
+                'application/json': { schema: { $ref: '#/components/schemas/EncryptedPayload' } },
+                'application/json-decrypted': { schema: { $ref: '#/components/schemas/AuthResponseData' } }
+              },
             },
             '400': { description: 'Bad Request / Validation Error', content: { 'application/json': { schema: { $ref: '#/components/schemas/ApiResponseError' } } } },
           },
@@ -230,12 +236,18 @@ The \`/analyses/process-document\` endpoint is the ONLY exception for request bo
           description: 'Requires an EncryptedPayload containing email and password.',
           requestBody: {
             required: true,
-            content: { 'application/json': { schema: { $ref: '#/components/schemas/EncryptedPayload' } } },
+            content: { 
+              'application/json': { schema: { $ref: '#/components/schemas/EncryptedPayload' } },
+              'application/json-decrypted': { schema: { $ref: '#/components/schemas/LoginRequest' } }
+            },
           },
           responses: {
             '200': {
               description: 'Encrypted JSON Response containing user profile and JWT token',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/EncryptedPayload' } } },
+              content: { 
+                'application/json': { schema: { $ref: '#/components/schemas/EncryptedPayload' } },
+                'application/json-decrypted': { schema: { $ref: '#/components/schemas/AuthResponseData' } }
+              },
             },
             '401': { description: 'Unauthorized / Invalid Credentials', content: { 'application/json': { schema: { $ref: '#/components/schemas/ApiResponseError' } } } },
           },
@@ -249,12 +261,18 @@ The \`/analyses/process-document\` endpoint is the ONLY exception for request bo
           security: [{ bearerAuth: [] }],
           requestBody: {
             required: true,
-            content: { 'application/json': { schema: { $ref: '#/components/schemas/EncryptedPayload' } } },
+            content: { 
+              'application/json': { schema: { $ref: '#/components/schemas/EncryptedPayload' } },
+              'application/json-decrypted': { schema: { $ref: '#/components/schemas/CreatePolicyRequest' } }
+            },
           },
           responses: {
             '201': {
               description: 'Encrypted JSON Response containing created policy object',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/EncryptedPayload' } } },
+              content: { 
+                'application/json': { schema: { $ref: '#/components/schemas/EncryptedPayload' } },
+                'application/json-decrypted': { schema: { $ref: '#/components/schemas/PolicyResponseData' } }
+              },
             },
             '401': { description: 'Unauthorized' },
           },
@@ -267,7 +285,10 @@ The \`/analyses/process-document\` endpoint is the ONLY exception for request bo
           responses: {
             '200': {
               description: 'Encrypted JSON Response containing list of policies',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/EncryptedPayload' } } },
+              content: { 
+                'application/json': { schema: { $ref: '#/components/schemas/EncryptedPayload' } },
+                'application/json-decrypted': { schema: { type: 'array', items: { $ref: '#/components/schemas/PolicyResponseData' } } }
+              },
             },
             '401': { description: 'Unauthorized' },
           },
@@ -291,7 +312,10 @@ The \`/analyses/process-document\` endpoint is the ONLY exception for request bo
           responses: {
             '200': {
               description: 'Encrypted JSON Response containing policy details',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/EncryptedPayload' } } },
+              content: { 
+                'application/json': { schema: { $ref: '#/components/schemas/EncryptedPayload' } },
+                'application/json-decrypted': { schema: { $ref: '#/components/schemas/PolicyResponseData' } }
+              },
             },
             '404': { description: 'Policy not found' },
           },
@@ -312,12 +336,18 @@ The \`/analyses/process-document\` endpoint is the ONLY exception for request bo
           ],
           requestBody: {
             required: true,
-            content: { 'application/json': { schema: { $ref: '#/components/schemas/EncryptedPayload' } } },
+            content: { 
+              'application/json': { schema: { $ref: '#/components/schemas/EncryptedPayload' } },
+              'application/json-decrypted': { schema: { $ref: '#/components/schemas/UpdatePolicyRequest' } }
+            },
           },
           responses: {
             '200': {
               description: 'Encrypted JSON Response containing updated policy details',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/EncryptedPayload' } } },
+              content: { 
+                'application/json': { schema: { $ref: '#/components/schemas/EncryptedPayload' } },
+                'application/json-decrypted': { schema: { $ref: '#/components/schemas/PolicyResponseData' } }
+              },
             },
             '404': { description: 'Policy not found' },
           },
@@ -350,12 +380,18 @@ The \`/analyses/process-document\` endpoint is the ONLY exception for request bo
           security: [{ bearerAuth: [] }],
           requestBody: {
             required: true,
-            content: { 'application/json': { schema: { $ref: '#/components/schemas/EncryptedPayload' } } },
+            content: { 
+              'application/json': { schema: { $ref: '#/components/schemas/EncryptedPayload' } },
+              'application/json-decrypted': { schema: { $ref: '#/components/schemas/CreateAnalysisRequest' } }
+            },
           },
           responses: {
             '201': {
               description: 'Encrypted JSON Response containing created analysis snapshot',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/EncryptedPayload' } } },
+              content: { 
+                'application/json': { schema: { $ref: '#/components/schemas/EncryptedPayload' } },
+                'application/json-decrypted': { schema: { $ref: '#/components/schemas/AnalysisResponseData' } }
+              },
             },
           },
         },
@@ -384,7 +420,10 @@ The \`/analyses/process-document\` endpoint is the ONLY exception for request bo
           responses: {
             '201': {
               description: 'Encrypted JSON Response containing Analysis Snapshot',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/EncryptedPayload' } } },
+              content: { 
+                'application/json': { schema: { $ref: '#/components/schemas/EncryptedPayload' } },
+                'application/json-decrypted': { schema: { $ref: '#/components/schemas/AnalysisResponseData' } }
+              },
             },
             '400': { description: 'Missing image or invalid policy ID' },
           },
@@ -397,8 +436,41 @@ The \`/analyses/process-document\` endpoint is the ONLY exception for request bo
 
 const swaggerSpec = swaggerJsdoc(options);
 
+if (env.NODE_ENV === 'development') {
+  // In dev mode, replace EncryptedPayload with the actual schemas for better developer experience
+  for (const path of Object.values((swaggerSpec as any).paths || {})) {
+    for (const method of Object.values(path as any)) {
+      const operation = method as any;
+      
+      if (operation.requestBody?.content?.['application/json-decrypted']) {
+        operation.requestBody.content['application/json'] = operation.requestBody.content['application/json-decrypted'];
+        delete operation.requestBody.content['application/json-decrypted'];
+      }
+
+      if (operation.responses) {
+        for (const statusCode of Object.keys(operation.responses)) {
+          const response = operation.responses[statusCode];
+          if (response.content?.['application/json-decrypted']) {
+            response.content['application/json'] = response.content['application/json-decrypted'];
+            delete response.content['application/json-decrypted'];
+          }
+        }
+      }
+    }
+  }
+}
+
 export const setupSwagger = (app: Application) => {
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+  const swaggerUiOptions = {
+    swaggerOptions: {
+      requestInterceptor: (req: any) => {
+        req.headers['x-swagger-dev'] = 'true';
+        return req;
+      }
+    }
+  };
+  
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, swaggerUiOptions));
   app.get('/api-docs-json', (_req: Request, res: Response) => {
     res.setHeader('Content-Type', 'application/json');
     res.send(swaggerSpec);
