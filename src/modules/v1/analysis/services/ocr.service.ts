@@ -1,9 +1,17 @@
 import vision from '@google-cloud/vision';
 import { logger } from '../../../../config/logger';
 
-// Instantiates a client. Note: This requires GOOGLE_APPLICATION_CREDENTIALS to be set in the environment.
-// For development without credentials, this will throw an auth error when called.
-const client = new vision.ImageAnnotatorClient();
+// Instantiates a client. Note: This requires GOOGLE_APPLICATION_CREDENTIALS to be set in the environment,
+// OR GOOGLE_CREDS_JSON to contain the stringified JSON credentials.
+const visionOptions: vision.ClientOptions = {};
+if (process.env.GOOGLE_CREDS_JSON) {
+  try {
+    visionOptions.credentials = JSON.parse(process.env.GOOGLE_CREDS_JSON);
+  } catch (e) {
+    logger.error('Failed to parse GOOGLE_CREDS_JSON env variable');
+  }
+}
+const client = new vision.ImageAnnotatorClient(visionOptions);
 
 export class OcrService {
   async extractTextFromBuffer(imageBuffer: Buffer): Promise<string> {

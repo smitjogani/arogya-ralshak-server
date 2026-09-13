@@ -9,7 +9,8 @@
     "build": "tsc",
     "test": "vitest run",
     "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev"
+    "prisma:migrate": "prisma migrate dev",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@google-cloud/vision": "^6.0.0",
