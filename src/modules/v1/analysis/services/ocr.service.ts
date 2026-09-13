@@ -3,7 +3,7 @@ import { logger } from '../../../../config/logger';
 
 // Instantiates a client. Note: This requires GOOGLE_APPLICATION_CREDENTIALS to be set in the environment,
 // OR GOOGLE_CREDS_JSON to contain the stringified JSON credentials.
-const visionOptions: vision.ClientOptions = {};
+const visionOptions: { credentials?: any } = {};
 if (process.env.GOOGLE_CREDS_JSON) {
   try {
     visionOptions.credentials = JSON.parse(process.env.GOOGLE_CREDS_JSON);
